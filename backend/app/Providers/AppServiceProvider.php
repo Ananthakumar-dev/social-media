@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Services\CacheStore;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -11,7 +13,10 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        // binding cache store to the service container
+        $this->app->singleton(CacheStore::class, function () {
+            return new CacheStore;
+        });
     }
 
     /**
@@ -19,6 +24,6 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        Model::preventLazyLoading();
     }
 }
