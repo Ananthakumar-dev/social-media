@@ -5,10 +5,8 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\LoginRequest;
 use App\Http\Requests\Api\RegisterRequest;
-use App\Services\LoginService;
-use App\Services\RegisterService;
-use App\Services\TokenService;
-use Illuminate\Http\Request;
+use App\Services\Api\RegisterService;
+use App\Services\Jwt\TokenService;
 use Illuminate\Support\Arr;
 
 final class AuthController extends Controller

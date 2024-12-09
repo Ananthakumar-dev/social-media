@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\CreatePostRequest;
-use App\Services\PostService;
+use App\Services\Api\PostService;
 
 class PostController extends Controller
 {
@@ -39,22 +39,9 @@ class PostController extends Controller
      */
     public function getComments(
         int $postId
-    ) 
-    {
+    ) {
         return $this->postService->getComments(
             postId: $postId
-        );
-    }
-
-    /**
-     * get all posts relates to user
-     */
-    public function getUserPosts(
-        int $userId
-    )
-    {
-        return $this->postService->getPosts(
-            userId: $userId
         );
     }
 }

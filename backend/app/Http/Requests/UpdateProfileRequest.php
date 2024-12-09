@@ -24,6 +24,12 @@ class UpdateProfileRequest extends FormRequest
     {
         $userId = Auth::id();
 
+        logger([
+            'this' => $this->name,
+            'email' => $this->email,
+            'request_all' => request()->all()
+        ]);
+
         return [
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email,' . $userId,

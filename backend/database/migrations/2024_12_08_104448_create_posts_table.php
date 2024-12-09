@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('posts', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('user_id'); // User who created the post
+            $table->string('title');
             $table->text('content');
             $table->string('image')->nullable();
             $table->timestamps();

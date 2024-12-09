@@ -4,8 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\ShareRequest;
-use App\Services\ShareService;
-use Illuminate\Http\Request;
+use App\Services\Api\ShareService;
 
 class ShareController extends Controller
 {

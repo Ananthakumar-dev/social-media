@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services;
+namespace App\Services\Api;
 
 use App\Models\Comment;
 use Exception;
@@ -21,11 +21,12 @@ class CommentService
      * Create a comment for particular post
      */
     public function create(
-        array $validated
+        array $validated,
+        int $postId
     ) {
         try {
-            Comment::create([
-                'post_id' => $validated['post_id'],
+            $comment = Comment::create([
+                'post_id' => $postId,
                 'user_id' => $this->authId,
                 'parent_id' => $validated['parent_id'] ?? null,
                 'content' => $validated['content'],
@@ -39,7 +40,8 @@ class CommentService
 
         return [
             'status' => true,
-            'message' => 'Comment added successfully'
+            'message' => 'Comment added successfully',
+            'data' => Comment::with('user', 'replies.user')->where('id', $comment->id)->first()
         ];
     }
 
@@ -97,5 +99,30 @@ class CommentService
             "message" => "Replies retrieved successfully!",
             "data" => $comment->replies,
         ]);
+    }
+
+    /**
+     * get all comments for a particular post
+     */
+    public function getAllComments(
+        $postId
+    ) {
+        try {
+            $comments = Comment::with('user', 'replies.user')
+                ->where('post_id', $postId)
+                ->latest()
+                ->get();
+        } catch (Exception $e) {
+            return [
+                'status' => false,
+                'message' => app()->isLocal() ? $e->getMessage() : 'Something went wrong'
+            ];
+        }
+
+        return [
+            'status' => true,
+            'message' => 'Comments listed successfully',
+            'data' => $comments
+        ];
     }
 }

@@ -1,11 +1,12 @@
 <?php
 
-namespace App\Services;
+namespace App\Services\Api;
 
 use App\Models\Comment;
 use App\Models\Post;
 use Exception;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class PostService
 {
@@ -24,6 +25,7 @@ class PostService
             // Create the post
             Post::create([
                 'user_id' => Auth::id(), // Authenticated user's ID
+                'title' => $validated['title'],
                 'content' => $validated['content'],
                 'image' => $imagePath, // Store the image path
             ]);
@@ -81,9 +83,10 @@ class PostService
      * get all posts relates to user
      */
     public function getPosts(
-        $userId
+        $request
     ) {
         try {
+            $userId = Auth::id();
             // Validate if the user exists
             $user = \App\Models\User::find($userId);
 
@@ -95,8 +98,13 @@ class PostService
             }
 
             // Fetch all posts by the user with related data
-            $posts = Post::withCount(['comments', 'likes', 'shares'])
+            $posts = Post::with(['user'])   
+                ->withCount(['comments', 'likes', 'shares'])
                 ->where('user_id', $userId)
+                ->addSelect([
+                    DB::raw("(SELECT COUNT(id) FROM likes WHERE likes.user_id = posts.user_id AND likes.post_id = posts.id) AS liked"),
+                    DB::raw("(SELECT COUNT(id) FROM shares WHERE shares.user_id = posts.user_id AND shares.post_id = posts.id) AS shared"),
+                ])
                 ->orderBy('created_at', 'desc') // Order by newest first
                 ->get();
         } catch (Exception $e) {

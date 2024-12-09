@@ -4,8 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\LikeRequest;
-use App\Services\LikeService;
-use Illuminate\Http\Request;
+use App\Services\Api\LikeService;
 
 class LikeController extends Controller
 {

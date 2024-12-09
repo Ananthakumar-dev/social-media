@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services;
+namespace App\Services\Api;
 
 use Exception;
 use Illuminate\Support\Facades\Auth;
@@ -45,6 +45,20 @@ class UserService
         return [
             'status' => true,
             'message' => 'Updated successfully'
+        ];
+    }
+
+    /**
+     * get user profile details 
+     */
+    public function getProfileDetails()
+    {
+        $user = Auth::user();
+        
+        return [
+            'status' => true,
+            'message' => 'User Fetched Successfully',
+            'data' => $user
         ];
     }
 }

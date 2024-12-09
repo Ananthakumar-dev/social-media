@@ -5,8 +5,8 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\ReplyToCommentRequest;
 use App\Http\Requests\CommentRequest;
-use App\Services\CommentService;
-use Illuminate\Http\Request;
+use App\Models\Post;
+use App\Services\Api\CommentService;
 
 class CommentController extends Controller
 {
@@ -15,8 +15,7 @@ class CommentController extends Controller
      */
     public function __construct(
         private CommentService $commentService
-    )
-    {
+    ) {
         //
     }
 
@@ -24,15 +23,16 @@ class CommentController extends Controller
      * Create a comment for post
      */
     public function store(
-        CommentRequest $commentRequest
-    )
-    {
+        CommentRequest $commentRequest,
+        int $postId
+    ) {
         // get validated datas
         $validatedFields = $commentRequest->validated();
 
         // create a comment for a post
         return $this->commentService->create(
-            validated: $validatedFields
+            validated: $validatedFields,
+            postId: $postId
         );
     }
 
@@ -41,8 +41,7 @@ class CommentController extends Controller
      */
     public function replyToComment(
         ReplyToCommentRequest $replyToCommentRequest
-    )
-    {
+    ) {
         $validatedFields = $replyToCommentRequest->validated();
 
         return $this->commentService->reply(
@@ -55,10 +54,20 @@ class CommentController extends Controller
      */
     public function getReplies(
         int $commentId
-    )
-    {
+    ) {
         return $this->commentService->getReplies(
             commentId: $commentId
+        );
+    }
+
+    /**
+     * fetch all comments for a particular post
+     */
+    public function comments(
+        int $postId
+    ) {
+        return $this->commentService->getAllComments(
+            postId: $postId
         );
     }
 }
