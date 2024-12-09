@@ -4,6 +4,8 @@ namespace App\Services\Api;
 
 use App\Models\Post;
 use Exception;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class FeedService
 {
@@ -14,14 +16,20 @@ class FeedService
         $request
     ) {
         try {
+            $user_id = Auth::id();
+
             // Define the number of posts per page (pagination)
             $perPage = $request->get('per_page', PAGINATION); // Default to 10 posts per page
 
             // Fetch posts with pagination, comments count, likes count, and shares count
             $posts = Post::with([
-                'user:id,name,profile_picture',  // User info for the post
+                'user:id,name,picture',  // User info for the post
             ])
                 ->withCount(['comments', 'likes', 'shares'])  // Get counts for comments, likes, and shares
+                ->addSelect([
+                    DB::raw("(SELECT COUNT(id) FROM likes WHERE likes.user_id = '$user_id' AND likes.post_id = posts.id) AS liked"),
+                    DB::raw("(SELECT COUNT(id) FROM shares WHERE shares.user_id = '$user_id' AND shares.post_id = posts.id) AS shared"),
+                ])
                 ->orderBy('created_at', 'desc')  // Newest posts first
                 ->paginate($perPage);  // Pagination
 

@@ -8,6 +8,7 @@ use App\Http\Requests\Api\RegisterRequest;
 use App\Services\Api\RegisterService;
 use App\Services\Jwt\TokenService;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Auth;
 
 final class AuthController extends Controller
 {
@@ -74,5 +75,18 @@ final class AuthController extends Controller
         }
 
         return $issueToken;
+    }
+
+    /**
+     * Logout functionality
+     */
+    public function logout()
+    {
+        Auth::logout();
+
+        return [
+            'status' => true,
+            'message' => 'Logout Successfully'
+        ];
     }
 }

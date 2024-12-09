@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import api from '../axios';
+import PostCard from "./PostCard.jsx";
 
 const Feed = () => {
     const [posts, setPosts] = useState([]);
@@ -12,9 +13,10 @@ const Feed = () => {
             setLoading(true); // Start loading
 
             try {
-                const response = await api.get(`/feeds?page=${currentPage}`);
-                setPosts(response.data.data); // Assuming the posts are in `data`
-                setTotalPages(response.data.last_page); // Get total number of pages
+                const {data} = await api.get(`/feeds?page=${currentPage}`);
+                const datas = data.data
+                setPosts(datas.data); // Assuming the posts are in `data`
+                setTotalPages(datas.last_page); // Get total number of pages
             } catch (err) {
                 console.error('Error fetching posts:', err);
             } finally {
@@ -39,17 +41,7 @@ const Feed = () => {
 
             {posts.length > 0 ? (
                 posts.map((post) => (
-                    <div key={post.id} className="bg-white p-6 rounded-lg shadow-md mb-6">
-                        <h3 className="text-2xl font-bold">{post.user.name}</h3>
-                        <p className="text-lg">{post.body}</p>
-                        {post.image && (
-                            <img
-                                src={`http://your-laravel-backend.com/storage/${post.image}`}
-                                alt="Post"
-                                className="mt-4"
-                            />
-                        )}
-                    </div>
+                    <PostCard key={post.id} post={post} />
                 ))
             ) : (
                 <p>No posts available.</p>

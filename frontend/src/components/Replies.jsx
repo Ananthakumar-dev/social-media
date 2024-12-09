@@ -1,7 +1,7 @@
 import { useState } from "react";
 import api from "../axios.js";
 
-const Replies = ({ replies, parentId }) => {
+const Replies = ({ replies, parentId, postId }) => {
     const [newReply, setNewReply] = useState("");
     const [replyList, setReplyList] = useState(replies);
 
@@ -10,10 +10,11 @@ const Replies = ({ replies, parentId }) => {
         if (!newReply.trim()) return;
 
         try {
-            const { data } = await api.post(`/comments/${parentId}/reply`, {
+            const { data } = await api.post(`/comments/${parentId}/${postId}/reply`, {
                 content: newReply,
             });
-            setReplyList([data, ...replyList]); // Add the reply to the list
+
+            setReplyList([data.data, ...replyList]); // Add the reply to the list
             setNewReply(""); // Clear the reply input
         } catch (err) {
             console.error("Error adding reply:", err);

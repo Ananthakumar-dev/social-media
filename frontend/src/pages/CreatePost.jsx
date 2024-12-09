@@ -26,7 +26,7 @@ const CreatePost = () => {
             const response = await api.post('/posts', formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
-                    Authorization: `Bearer ${localStorage.getItem('token')}`, // Add JWT token from localStorage
+                    Authorization: `Bearer ${sessionStorage.getItem('token')}`, // Add JWT token from sessionStorage
                 },
             });
 

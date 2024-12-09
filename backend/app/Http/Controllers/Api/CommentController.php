@@ -40,12 +40,16 @@ class CommentController extends Controller
      * Reply to a particular comment
      */
     public function replyToComment(
-        ReplyToCommentRequest $replyToCommentRequest
+        ReplyToCommentRequest $replyToCommentRequest,
+        int $parentId,
+        int $postId
     ) {
         $validatedFields = $replyToCommentRequest->validated();
 
         return $this->commentService->reply(
-            validated: $validatedFields
+            validated: $validatedFields,
+            parentId: $parentId,
+            postId: $postId,
         );
     }
 
@@ -57,17 +61,6 @@ class CommentController extends Controller
     ) {
         return $this->commentService->getReplies(
             commentId: $commentId
-        );
-    }
-
-    /**
-     * fetch all comments for a particular post
-     */
-    public function comments(
-        int $postId
-    ) {
-        return $this->commentService->getAllComments(
-            postId: $postId
         );
     }
 }

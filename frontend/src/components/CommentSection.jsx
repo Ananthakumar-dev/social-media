@@ -5,6 +5,7 @@ import Replies from "./Replies.jsx";
 const CommentSection = ({ postId }) => {
     const [comments, setComments] = useState([]); // Holds the comments for the post
     const [newComment, setNewComment] = useState(""); // For creating a new comment
+    const [visibleReplies, setVisibleReplies] = useState({}); // Tracks which comments have replies visible
 
     // Fetch comments for the post
     useEffect(() => {
@@ -30,7 +31,6 @@ const CommentSection = ({ postId }) => {
                 content: newComment,
             });
 
-            console.log(comments, data)
             setComments([...comments, data.data]); // Add the new comment to the list
             setNewComment(""); // Clear the input field
         } catch (err) {
@@ -38,22 +38,43 @@ const CommentSection = ({ postId }) => {
         }
     };
 
+    // Toggle the visibility of replies for a specific comment
+    const toggleReplies = (commentId) => {
+        setVisibleReplies((prev) => ({
+            ...prev,
+            [commentId]: !prev[commentId], // Toggle visibility
+        }));
+    };
+
     // Render comments and replies
     const renderComments = () => {
-        if(!comments.length) return null;
+        if (!comments.length) return null;
 
         return comments.map((comment) => (
             <div key={comment.id} className="border-b border-gray-200 pb-4 mb-4">
                 <div className="flex items-start space-x-3">
                     <img
-                        src={comment.user.profile_picture || "/default-avatar.png"}
+                        src={`http://127.0.0.1:8000/storage/${comment.user.picture || "default-profile.png"}`}
                         alt={comment.user.name}
                         className="w-8 h-8 rounded-full"
                     />
                     <div>
                         <p className="font-semibold">{comment.user.name}</p>
                         <p className="text-gray-700">{comment.content}</p>
-                        <Replies replies={comment.replies} parentId={comment.id} />
+                        {/* Toggle Replies Button */}
+                        <button
+                            onClick={() => toggleReplies(comment.id)}
+                            className="text-sm text-blue-600 hover:underline mt-2"
+                        >
+                            {visibleReplies[comment.id] ? "Hide Replies" : "Show Replies"}
+                        </button>
+
+                        {/* Replies Section (conditionally rendered) */}
+                        {visibleReplies[comment.id] && (
+                            <div className="mt-4 ml-6">
+                                <Replies replies={comment.replies} parentId={comment.id} postId={comment.post_id} />
+                            </div>
+                        )}
                     </div>
                 </div>
             </div>

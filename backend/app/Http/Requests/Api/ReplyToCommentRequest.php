@@ -22,8 +22,6 @@ class ReplyToCommentRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'post_id' => 'required|exists:posts,id',
-            'parent_id' => 'required|exists:comments,id', // The parent comment
             'content' => 'required|string|max:500', // Content of the reply
         ];
     }

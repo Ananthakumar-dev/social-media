@@ -49,21 +49,23 @@ class CommentService
      * Create a reply for particular comment
      */
     public function reply(
-        array $validated
+        array $validated,
+        int $parentId,
+        int $postId,
     ) {
         try {
-            $parentComment = Comment::find($validated['parent_id']);
-            if ($parentComment->post_id != $validated['post_id']) {
+            $parentComment = Comment::find($parentId);
+            if ($parentComment->post_id != $postId) {
                 return [
                     'success' => false,
                     'message' => 'The parent comment does not belong to the specified post.',
                 ];
             }
 
-            Comment::create([
-                'post_id' => $validated['post_id'],
+            $comment = Comment::create([
+                'post_id' => $postId,
                 'user_id' => $this->authId,
-                'parent_id' => $validated['parent_id'], // Set the parent comment ID
+                'parent_id' => $parentId, // Set the parent comment ID
                 'content' => $validated['content'],
             ]);
         } catch (Exception $e) {
@@ -76,6 +78,7 @@ class CommentService
         return [
             'success' => true,
             'message' => 'Reply added successfully!',
+            'data' => Comment::with('user')->where('id', $comment->id)->first()
         ];
     }
 
@@ -99,30 +102,5 @@ class CommentService
             "message" => "Replies retrieved successfully!",
             "data" => $comment->replies,
         ]);
-    }
-
-    /**
-     * get all comments for a particular post
-     */
-    public function getAllComments(
-        $postId
-    ) {
-        try {
-            $comments = Comment::with('user', 'replies.user')
-                ->where('post_id', $postId)
-                ->latest()
-                ->get();
-        } catch (Exception $e) {
-            return [
-                'status' => false,
-                'message' => app()->isLocal() ? $e->getMessage() : 'Something went wrong'
-            ];
-        }
-
-        return [
-            'status' => true,
-            'message' => 'Comments listed successfully',
-            'data' => $comments
-        ];
     }
 }

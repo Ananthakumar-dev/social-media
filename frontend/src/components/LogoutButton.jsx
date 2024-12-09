@@ -1,14 +1,24 @@
 import { useNavigate } from 'react-router';
+import api from "../axios.js";
 
-const LogoutButton = () => {
+const LogoutButton = ({ setIsAuthenticated }) => {
     const navigate = useNavigate();
 
-    const handleLogout = () => {
-        // Remove the token from localStorage
-        localStorage.removeItem('token');
+    const handleLogout = async () => {
+        try {
+            const {data} = await api.post('/logout');
 
-        // Redirect to login page
-        navigate('/login');
+            if(data.status) {
+                // Remove the token from sessionStorage
+                sessionStorage.removeItem("token");
+                setIsAuthenticated(false); // Update state
+
+                // Redirect to login page
+                navigate('/login');
+            }
+        } catch (err) {
+            console.log('Error updating profile');
+        }
     };
 
     return (

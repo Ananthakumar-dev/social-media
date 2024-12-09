@@ -44,4 +44,16 @@ class PostController extends Controller
             postId: $postId
         );
     }
+
+    /**
+     * all lile,share,comment details for a particular posts
+     */
+    public function getPostDetails(
+        int $postId
+    )
+    {
+        return $this->postService->getPostDetails(
+            postId: $postId
+        );
+    }
 }

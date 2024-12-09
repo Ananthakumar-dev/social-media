@@ -98,12 +98,12 @@ class PostService
             }
 
             // Fetch all posts by the user with related data
-            $posts = Post::with(['user'])   
+            $posts = Post::with(['user'])
                 ->withCount(['comments', 'likes', 'shares'])
                 ->where('user_id', $userId)
                 ->addSelect([
-                    DB::raw("(SELECT COUNT(id) FROM likes WHERE likes.user_id = posts.user_id AND likes.post_id = posts.id) AS liked"),
-                    DB::raw("(SELECT COUNT(id) FROM shares WHERE shares.user_id = posts.user_id AND shares.post_id = posts.id) AS shared"),
+                    DB::raw("(SELECT COUNT(id) FROM likes WHERE likes.user_id = '$userId' AND likes.post_id = posts.id) AS liked"),
+                    DB::raw("(SELECT COUNT(id) FROM shares WHERE shares.user_id = '$userId' AND shares.post_id = posts.id) AS shared"),
                 ])
                 ->orderBy('created_at', 'desc') // Order by newest first
                 ->get();
@@ -118,6 +118,40 @@ class PostService
             'success' => true,
             'message' => 'Posts retrieved successfully!',
             'data' => $posts,
+        ];
+    }
+
+    /**
+     * get post details
+     */
+    public function getPostDetails(
+        $postId
+    ) {
+        try {
+            $post = Post::findOrFail($postId);
+
+            $comments = $post->comments()
+                ->with('user:id,name,picture,created_at') // Include user details
+                ->get();
+
+            $likes = $post->likes()
+                ->with('user:id,name,picture,created_at') // Include user details
+                ->get();
+
+            $shares = $post->shares()
+                ->with('user:id,name,picture,created_at') // Include user details
+                ->get();
+        } catch (Exception $e) {
+            return [
+                'status' => false,
+                'message' => app()->isLocal() ? $e->getMessage() : 'Something went wrong'
+            ];
+        }
+
+        return [
+            'comments' => $comments,
+            'likes' => $likes,
+            'shares' => $shares,
         ];
     }
 }

@@ -18,17 +18,17 @@ Route::get('/feeds', [FeedsController::class, 'feeds']);
 Route::middleware('auth:api')->group(function () {
     // user 
     Route::get('/user/profile', [UserController::class, 'getProfile']);
-    Route::put('/user/profile', [UserController::class, 'updateProfile']);
+    Route::post('/user/profile', [UserController::class, 'updateProfile']);
     Route::get('/user/posts', [UserController::class, 'getUserPosts']);
 
     // posts
     Route::post('/posts', [PostController::class, 'store']);
     Route::get('/posts/{postId}/comments', [PostController::class, 'getComments']);
+    Route::get('/posts/{post}/details', [PostController::class, 'getPostDetails']);
 
     // comments
-    Route::get('/posts/{postId}/comments', [CommentController::class, 'comments']); // Fetch comments for a post
     Route::post('/posts/{postId}/comments', [CommentController::class, 'store']);
-    Route::post('/comments/reply', [CommentController::class, 'replyToComment']);
+    Route::post('/comments/{parentId}/{postId}/reply', [CommentController::class, 'replyToComment']);
     Route::get('/comments/{commentId}/replies', [CommentController::class, 'getReplies']);
 
     // likes
@@ -36,4 +36,7 @@ Route::middleware('auth:api')->group(function () {
 
     // Share
     Route::post('/posts/share', [ShareController::class, 'store']);
+
+    // logout
+    Route::post('logout', [AuthController::class, 'logout']);
 });

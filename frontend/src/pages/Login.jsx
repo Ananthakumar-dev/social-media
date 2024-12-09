@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router';
+import {Link, useNavigate} from 'react-router';
 import api from '../axios';
 
 const Login = () => {
@@ -12,7 +12,7 @@ const Login = () => {
         e.preventDefault();
         try {
             const response = await api.post('/login', { email, password });
-            localStorage.setItem('token', response.data.token); // Store token in localStorage
+            sessionStorage.setItem('token', response.data.token); // Store token in sessionStorage
             navigate('/profile'); // Redirect to the dashboard or feed page
         } catch (err) {
             setError('Invalid credentials');
@@ -53,12 +53,12 @@ const Login = () => {
                 <div className="text-center mt-4">
                     <p className="text-sm text-gray-600">
                         Don't have an account?{" "}
-                        <a
-                            href="/register"
+                        <Link
+                            to="/register"
                             className="text-blue-600 hover:underline hover:text-blue-700"
                         >
                             Register here
-                        </a>
+                        </Link>
                     </p>
                 </div>
             </div>

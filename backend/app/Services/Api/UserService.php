@@ -24,13 +24,13 @@ class UserService
             // Handle profile picture upload
             if (isset($validated['picture'])) {
                 // Delete old profile picture if it exists
-                if ($user->profile_picture && Storage::exists($user->profile_picture)) {
-                    Storage::delete($user->profile_picture);
+                if ($user->picture && Storage::exists($user->picture)) {
+                    Storage::delete($user->picture);
                 }
 
                 // Store new profile picture
-                $path = $validated['picture']->store('profile_pictures', 'public');
-                $user->profile_picture = $path;
+                $path = $validated['picture']->store('pictures', 'public');
+                $user->picture = $path;
             }
 
             // Save the user
