@@ -14,6 +14,11 @@ Route::post('/login', [AuthController::class, 'authenticate']);
 Route::post('/register', [AuthController::class, 'register']);
 Route::get('/feeds', [FeedsController::class, 'feeds']);
 
+// non-authorized posts & comment - because post comments and details are publically accessable
+Route::get('/posts/{postId}/comments', [PostController::class, 'getComments']);
+Route::get('/posts/{post}/details', [PostController::class, 'getPostDetails']);
+Route::get('/comments/{commentId}/replies', [CommentController::class, 'getReplies']);
+
 // Authorized routes
 Route::middleware('auth:api')->group(function () {
     // user 
@@ -23,13 +28,10 @@ Route::middleware('auth:api')->group(function () {
 
     // posts
     Route::post('/posts', [PostController::class, 'store']);
-    Route::get('/posts/{postId}/comments', [PostController::class, 'getComments']);
-    Route::get('/posts/{post}/details', [PostController::class, 'getPostDetails']);
 
     // comments
     Route::post('/posts/{postId}/comments', [CommentController::class, 'store']);
     Route::post('/comments/{parentId}/{postId}/reply', [CommentController::class, 'replyToComment']);
-    Route::get('/comments/{commentId}/replies', [CommentController::class, 'getReplies']);
 
     // likes
     Route::post('/posts/like', [LikeController::class, 'toggleLike']);

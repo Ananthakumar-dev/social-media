@@ -1,6 +1,8 @@
 import {Link} from 'react-router';
 import LogoutButton from "./LogoutButton.jsx";
-import {useEffect, useState} from "react";
+import {createContext, useEffect, useState} from "react";
+
+export const AppContext = createContext(null);
 
 const AppLayout = ({ children }) => {
     const [isAuthenticated, setIsAuthenticated] = useState(!!sessionStorage.getItem("token"));
@@ -50,11 +52,18 @@ const AppLayout = ({ children }) => {
             </header>
 
             {/* Main Content Area */}
-            <main className="">{children}</main>
+            <AppContext.Provider value={
+                {
+                    isAuthenticated,
+                    setIsAuthenticated
+                }
+            }>
+                <main className="">{children}</main>
+            </AppContext.Provider>
 
             {/* Footer */}
             <footer className="bg-blue-600 p-4 text-center text-white">
-                <p>&copy; 2024 MyApp. All rights reserved.</p>
+                <p>&copy; 2024 Ananthakumar. All rights reserved.</p>
             </footer>
         </div>
     );

@@ -1,6 +1,7 @@
 import { useParams } from "react-router";
 import { useEffect, useState } from "react";
 import api from "../axios.js";
+import toast from "react-hot-toast";
 
 const PostDetails = () => {
     const { postId } = useParams();
@@ -13,11 +14,10 @@ const PostDetails = () => {
             try {
                 const { data } = await api.get(`/posts/${postId}/details`);
 
-                console.log(data)
                 setDetails(data);
                 setLoading(false);
             } catch (err) {
-                console.error("Error fetching post details:", err);
+                toast.error(err?.message);
                 setLoading(false);
             }
         };

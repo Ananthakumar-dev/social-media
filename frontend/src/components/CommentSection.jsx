@@ -1,8 +1,11 @@
-import { useState, useEffect } from "react";
+import {useState, useEffect, useContext} from "react";
 import api from "../axios.js";
 import Replies from "./Replies.jsx";
+import toast from "react-hot-toast";
+import {AppContext} from "./AppLayout.jsx";
 
-const CommentSection = ({ postId }) => {
+const CommentSection = ({ postId, onCommentAdded }) => {
+    const { isAuthenticated } = useContext(AppContext);
     const [comments, setComments] = useState([]); // Holds the comments for the post
     const [newComment, setNewComment] = useState(""); // For creating a new comment
     const [visibleReplies, setVisibleReplies] = useState({}); // Tracks which comments have replies visible
@@ -14,7 +17,7 @@ const CommentSection = ({ postId }) => {
                 const { data } = await api.get(`/posts/${postId}/comments`);
                 setComments(data.data);
             } catch (err) {
-                console.error("Error fetching comments:", err);
+                toast.error(err?.message);
             }
         };
 
@@ -31,6 +34,7 @@ const CommentSection = ({ postId }) => {
                 content: newComment,
             });
 
+            onCommentAdded(); // Increment comment count in the parent
             setComments([...comments, data.data]); // Add the new comment to the list
             setNewComment(""); // Clear the input field
         } catch (err) {
@@ -84,21 +88,26 @@ const CommentSection = ({ postId }) => {
     return (
         <div className="mt-6">
             <h3 className="text-lg font-bold mb-4">Comments</h3>
-            <form onSubmit={handleAddComment} className="flex items-center space-x-3 mb-6">
-                <input
-                    type="text"
-                    placeholder="Add a comment..."
-                    value={newComment}
-                    onChange={(e) => setNewComment(e.target.value)}
-                    className="flex-1 p-2 border border-gray-300 rounded-lg focus:outline-none"
-                />
-                <button
-                    type="submit"
-                    className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
-                >
-                    Comment
-                </button>
-            </form>
+            {
+                isAuthenticated && (
+                    <form onSubmit={handleAddComment} className="flex items-center space-x-3 mb-6">
+                        <input
+                            type="text"
+                            placeholder="Add a comment..."
+                            value={newComment}
+                            onChange={(e) => setNewComment(e.target.value)}
+                            className="flex-1 p-2 border border-gray-300 rounded-lg focus:outline-none"
+                        />
+                        <button
+                            type="submit"
+                            className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+                        >
+                            Comment
+                        </button>
+                    </form>
+                )
+            }
+
             {renderComments()}
         </div>
     );

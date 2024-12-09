@@ -5,6 +5,7 @@ namespace App\Services\Api;
 use App\Models\Share;
 use Exception;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class ShareService
 {
@@ -48,6 +49,7 @@ class ShareService
             'success' => true,
             'message' => 'Post shared successfully!',
             'data' => $share,
+            'shares_count' => DB::table('shares')->where('post_id', $validated['post_id'])->count(),
         ];
     }
 }

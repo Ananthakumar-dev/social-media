@@ -1,15 +1,25 @@
-import { useState, useEffect } from 'react';
+import {useState, useEffect, useContext} from 'react';
 import api from '../axios.js';
-import {Link} from "react-router";
-import PostCard from "./PostCard.jsx"; // Axios instance with base URL and JWT token handling
+import {Link, useNavigate} from "react-router";
+import PostCard from "./PostCard.jsx";
+import toast from "react-hot-toast";
+import {AppContext} from "../components/AppLayout.jsx"; // Axios instance with base URL and JWT token handling
 
 const Posts = () => {
+    const { isAuthenticated } = useContext(AppContext);
+    const navigate = useNavigate();
     const [posts, setPosts] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
     const [lastPage, setLastPage] = useState(1);
     const [loading, setLoading] = useState(false);
 
     const fetchPosts = async (page = 1) => {
+        if(!isAuthenticated) {
+            navigate('/login');
+            toast.error('Login to proceed');
+            return;
+        }
+
         setLoading(true);
 
         try {
@@ -18,7 +28,7 @@ const Posts = () => {
             setCurrentPage(data.current_page);
             setLastPage(data.last_page);
         } catch (error) {
-            console.error('Error fetching user posts:', error);
+            toast.error(error?.message);
         } finally {
             setLoading(false);
         }
@@ -36,10 +46,10 @@ const Posts = () => {
 
     return (
         <div className="max-w-2xl mx-auto p-4">
-            <h2 className="text-2xl font-bold mb-4">Your Posts</h2>
 
-            <div>
-                <h3><Link to="/create-post">Create post</Link></h3>
+            <div className="flex items-center gap-5 mb-5">
+                <h2 className="text-2xl font-bold">Your Posts</h2>
+                <h3><Link to="/create-post" className="text-blue-600 underline">Create post</Link></h3>
             </div>
 
             {loading ? (
@@ -49,7 +59,7 @@ const Posts = () => {
             ) : (
                 <div>
                     {posts.map((post) => (
-                        <PostCard key={post.id} post={post} />
+                        <PostCard key={post.id} post={post} setPosts={setPosts} />
                     ))}
 
                     {/* Pagination Controls */}

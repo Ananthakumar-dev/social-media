@@ -44,7 +44,8 @@ class UserService
 
         return [
             'status' => true,
-            'message' => 'Updated successfully'
+            'message' => 'Updated successfully',
+            'picture' => $user->picture
         ];
     }
 
@@ -54,7 +55,7 @@ class UserService
     public function getProfileDetails()
     {
         $user = Auth::user();
-        
+
         return [
             'status' => true,
             'message' => 'User Fetched Successfully',

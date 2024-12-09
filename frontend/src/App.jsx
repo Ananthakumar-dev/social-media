@@ -1,4 +1,5 @@
 import { BrowserRouter as Router, Route, Routes } from 'react-router';
+import { Toaster } from 'react-hot-toast';
 import AppLayout from './components/AppLayout.jsx';
 import Feed from './pages/Feed'; // Your feed page
 import Profile from './pages/Profile'; // Your profile page
@@ -10,20 +11,24 @@ import PostDetails from "./pages/PostDetails.jsx"; // Your register page
 
 const App = () => {
     return (
-        <Router>
-            <AppLayout>
-                <Routes>
-                    <Route path="/" element={<Feed />} />
-                    <Route path="/feeds" element={<Feed />} />
-                    <Route path="/profile" element={<Profile />} />
-                    <Route path="/posts" element={<Posts />} />
-                    <Route path="/create-post" element={<CreatePost />} />
-                    <Route path="/post-details/:postId" element={<PostDetails />} />
-                    <Route path="/login" element={<Login />} />
-                    <Route path="/register" element={<Register />} />
-                </Routes>
-            </AppLayout>
-        </Router>
+        <>
+            <Router>
+                <AppLayout>
+                    <Routes>
+                        <Route path="/" element={<Feed />} />
+                        <Route path="/feeds" element={<Feed />} />
+                        <Route path="/profile" element={<Profile />} />
+                        <Route path="/posts" element={<Posts />} />
+                        <Route path="/create-post" element={<CreatePost />} />
+                        <Route path="/post-details/:postId" element={<PostDetails />} />
+                        <Route path="/login" element={<Login />} />
+                        <Route path="/register" element={<Register />} />
+                    </Routes>
+                </AppLayout>
+            </Router>
+
+            <Toaster />
+        </>
     );
 };
 

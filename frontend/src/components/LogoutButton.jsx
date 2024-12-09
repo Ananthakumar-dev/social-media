@@ -1,5 +1,6 @@
 import { useNavigate } from 'react-router';
 import api from "../axios.js";
+import toast from "react-hot-toast";
 
 const LogoutButton = ({ setIsAuthenticated }) => {
     const navigate = useNavigate();
@@ -17,7 +18,7 @@ const LogoutButton = ({ setIsAuthenticated }) => {
                 navigate('/login');
             }
         } catch (err) {
-            console.log('Error updating profile');
+            toast.error(err?.message);
         }
     };
 

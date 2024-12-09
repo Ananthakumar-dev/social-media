@@ -1,19 +1,28 @@
-import { useState } from 'react';
+import {useContext, useEffect, useState} from 'react';
 import { useNavigate } from 'react-router';
 import api from '../axios';
+import toast from "react-hot-toast";
+import {AppContext} from "../components/AppLayout.jsx";
 
 const CreatePost = () => {
+    const { isAuthenticated } = useContext(AppContext);
+    const navigate = useNavigate();
     const [title, setTitle] = useState('');
     const [content, setContent] = useState('');
     const [image, setImage] = useState(null);
     const [loading, setLoading] = useState(false);
-    const [error, setError] = useState('');
-    const navigate = useNavigate();
+
+    useEffect(() => {
+        if(!isAuthenticated) {
+            navigate('/login');
+            toast.error('Login to proceed');
+            return;
+        }
+    }, [])
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         setLoading(true);
-        setError('');
 
         const formData = new FormData();
         formData.append('title', title);
@@ -23,7 +32,7 @@ const CreatePost = () => {
         }
 
         try {
-            const response = await api.post('/posts', formData, {
+            await api.post('/posts', formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
                     Authorization: `Bearer ${sessionStorage.getItem('token')}`, // Add JWT token from sessionStorage
@@ -31,9 +40,21 @@ const CreatePost = () => {
             });
 
             navigate('/posts');  // Navigate to the feeds page after post creation
+            toast.success('Post created successfully');
         } catch (err) {
-            setError('Error creating post') ;
-            console.error(err);
+            if (err.response && err.response.status === 422) {
+                const validationErrors = err.response.data.errors;
+
+                // Display all validation error messages in toast
+                for (const field in validationErrors) {
+                    validationErrors[field].forEach((message) => {
+                        toast.error(message); // Display each error message in a toast
+                    });
+                }
+            } else {
+                // Handle other errors
+                toast.error(err.message || 'Something went wrong');
+            }
         } finally {
             setLoading(false);
         }
@@ -49,7 +70,6 @@ const CreatePost = () => {
     return (
         <div className="max-w-lg mx-auto p-4">
             <h2 className="text-2xl font-bold mb-4">Create New Post</h2>
-            {error && <div className="text-red-500">{error}</div>}
             <form onSubmit={handleSubmit}>
                 <div className="mb-4">
                     <label htmlFor="title" className="block text-sm font-medium text-gray-700">Title</label>
@@ -61,7 +81,6 @@ const CreatePost = () => {
                         onChange={(e) => setTitle(e.target.value)}
                         className="w-full p-2 border rounded-md"
                         placeholder="Enter post title"
-                        required
                     />
                 </div>
 
@@ -75,7 +94,6 @@ const CreatePost = () => {
                         className="w-full p-2 border rounded-md"
                         placeholder="Write your post content"
                         rows="4"
-                        required
                     />
                 </div>
 

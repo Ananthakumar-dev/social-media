@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import api from '../axios';
 import PostCard from "./PostCard.jsx";
+import toast from "react-hot-toast";
 
 const Feed = () => {
     const [posts, setPosts] = useState([]);
@@ -18,7 +19,7 @@ const Feed = () => {
                 setPosts(datas.data); // Assuming the posts are in `data`
                 setTotalPages(datas.last_page); // Get total number of pages
             } catch (err) {
-                console.error('Error fetching posts:', err);
+                toast.error(err?.message);
             } finally {
                 setLoading(false); // Stop loading
             }
@@ -41,7 +42,7 @@ const Feed = () => {
 
             {posts.length > 0 ? (
                 posts.map((post) => (
-                    <PostCard key={post.id} post={post} />
+                    <PostCard key={post.id} post={post} setPosts={setPosts} />
                 ))
             ) : (
                 <p>No posts available.</p>

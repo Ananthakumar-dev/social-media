@@ -1,21 +1,43 @@
-import { useState } from 'react';
+import {useContext, useEffect, useState} from 'react';
 import {Link, useNavigate} from 'react-router';
 import api from '../axios';
+import toast from "react-hot-toast";
+import {AppContext} from "../components/AppLayout.jsx";
 
 const Login = () => {
+    const { isAuthenticated, setIsAuthenticated } = useContext(AppContext);
+    const navigate = useNavigate();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const [error, setError] = useState('');
-    const navigate = useNavigate();
+
+    useEffect(() => {
+        if(isAuthenticated) {
+            navigate('/profile');
+        }
+    }, [])
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
             const response = await api.post('/login', { email, password });
             sessionStorage.setItem('token', response.data.token); // Store token in sessionStorage
+
+            setIsAuthenticated(true);
             navigate('/profile'); // Redirect to the dashboard or feed page
         } catch (err) {
-            setError('Invalid credentials');
+            if (err.response && err.response.status === 422) {
+                const validationErrors = err.response.data.errors;
+
+                // Display all validation error messages in toast
+                for (const field in validationErrors) {
+                    validationErrors[field].forEach((message) => {
+                        toast.error(message); // Display each error message in a toast
+                    });
+                }
+            } else {
+                // Handle other errors
+                toast.error(err.message || 'Something went wrong');
+            }
         }
     };
 
@@ -23,7 +45,6 @@ const Login = () => {
         <div className="flex items-center justify-center min-h-screen bg-gray-100">
             <div className="w-full max-w-md bg-white p-8 rounded-lg shadow-md">
                 <h2 className="text-2xl font-semibold text-center mb-6 text-gray-800">Login</h2>
-                {error && <div className="mb-4 text-sm text-red-500">{error}</div>}
                 <form onSubmit={handleSubmit} className="space-y-4">
                     <div>
                         <input

@@ -5,6 +5,7 @@ namespace App\Services\Api;
 use App\Models\Like;
 use Exception;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class LikeService
 {
@@ -44,6 +45,7 @@ class LikeService
                 return [
                     'success' => true,
                     'message' => 'Post liked successfully!',
+                    'likes_count' => DB::table('likes')->where('post_id', $validated['post_id'])->count(),
                 ];
             }
         } catch (Exception $e) {

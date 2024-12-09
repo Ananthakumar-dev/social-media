@@ -23,7 +23,7 @@ a {
 }
 
 a:hover {
-  color: #fffbcb; /* Light yellow hover for links */
+  color: rgb(0 48 152); /* Light yellow hover for links */
 }
 
 /* Header (Navigation Bar) */

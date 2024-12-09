@@ -5,13 +5,21 @@ import { FaComment } from "react-icons/fa";
 import {useState} from "react";
 import {Link} from "react-router";
 
-const PostCard = ({ post }) => {
+const PostCard = ({ post, setPosts }) => {
     const [showComments, setShowComments] = useState(false); // Toggle for comments
 
     const handleToggleComments = () => {
         setShowComments(!showComments);
     };
 
+    console.log(post, setPosts)
+    const updatePostStats = (field, newCount) => {
+        setPosts((prevPosts) =>
+            prevPosts.map((p) =>
+                p.id === post.id ? { ...p, [`${field}_count`]: newCount } : p
+            )
+        );
+    };
 
     return (
         <div key={post.id} className="bg-white shadow-md rounded-lg p-4 mb-6">
@@ -55,11 +63,11 @@ const PostCard = ({ post }) => {
             {/* Post Interactions */}
             <div className="flex justify-between items-center text-sm border-t pt-4 text-white">
                 <div className="flex items-center">
-                    <Like postId={post.id} initialLikes={post.likes_count} initialLiked={post.liked > 0} />
+                    <Like postId={post.id} initialLikes={post.likes_count} initialLiked={post.liked > 0} onLikeToggle={(newCount) => updatePostStats("likes", newCount)} />
                 </div>
 
                 <div>
-                    <Share postId={post.id} initialShares={post.shares_count} initialShared={post.shared > 0} />
+                    <Share postId={post.id} initialShares={post.shares_count} initialShared={post.shared > 0} onShareToggle={(newCount) => updatePostStats("shares", newCount)} />
                 </div>
 
                 {/* Comment Button */}
@@ -75,7 +83,7 @@ const PostCard = ({ post }) => {
             {/* Comment Section */}
                 {showComments && (
                     <div>
-                        <CommentSection postId={post.id} />
+                        <CommentSection postId={post.id} onCommentAdded={() => updatePostStats("comments", post.comments_count + 1)} />
                     </div>
                     )
                 }
