@@ -5,7 +5,7 @@ import toast from "react-hot-toast";
 import {AppContext} from "./AppLayout.jsx";
 
 const CommentSection = ({ postId, onCommentAdded }) => {
-    const { isAuthenticated } = useContext(AppContext);
+    const { isAuthenticated, backendUrl } = useContext(AppContext);
     const [comments, setComments] = useState([]); // Holds the comments for the post
     const [newComment, setNewComment] = useState(""); // For creating a new comment
     const [visibleReplies, setVisibleReplies] = useState({}); // Tracks which comments have replies visible
@@ -58,7 +58,7 @@ const CommentSection = ({ postId, onCommentAdded }) => {
             <div key={comment.id} className="border-b border-gray-200 pb-4 mb-4">
                 <div className="flex items-start space-x-3">
                     <img
-                        src={`http://127.0.0.1:8000/storage/${comment.user.picture || "default-profile.png"}`}
+                        src={`${backendUrl}/storage/${comment.user.picture || "default-profile.png"}`}
                         alt={comment.user.name}
                         className="w-8 h-8 rounded-full"
                     />
@@ -68,7 +68,7 @@ const CommentSection = ({ postId, onCommentAdded }) => {
                         {/* Toggle Replies Button */}
                         <button
                             onClick={() => toggleReplies(comment.id)}
-                            className="text-sm text-blue-600 hover:underline mt-2"
+                            className="text-sm hover:underline mt-2"
                         >
                             {visibleReplies[comment.id] ? "Hide Replies" : "Show Replies"}
                         </button>

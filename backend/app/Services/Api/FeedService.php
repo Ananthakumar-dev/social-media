@@ -42,7 +42,7 @@ class FeedService
 
         // Return paginated posts
         return [
-            'success' => true,
+            'status' => true,
             'message' => 'Feed fetched successfully!',
             'data' => $posts,
         ];

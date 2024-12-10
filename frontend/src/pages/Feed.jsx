@@ -15,6 +15,11 @@ const Feed = () => {
 
             try {
                 const {data} = await api.get(`/feeds?page=${currentPage}`);
+                if(!data.status) {
+                    toast.error(data?.message);
+                    return;
+                }
+
                 const datas = data.data
                 setPosts(datas.data); // Assuming the posts are in `data`
                 setTotalPages(datas.last_page); // Get total number of pages
@@ -40,13 +45,15 @@ const Feed = () => {
 
             {loading && <p>Loading...</p>} {/* Show loading text */}
 
-            {posts.length > 0 ? (
+            {posts.length > 0 && (
                 posts.map((post) => (
-                    <PostCard key={post.id} post={post} setPosts={setPosts} />
+                    <PostCard key={post.id} post={post} setPosts={setPosts}/>
                 ))
-            ) : (
-                <p>No posts available.</p>
             )}
+
+            {
+                (!posts.length && !loading) && <p> No posts Found! </p>
+            }
 
             {/* Pagination Controls */}
             <div className="flex justify-center mt-8">

@@ -25,9 +25,15 @@ const Login = () => {
             setIsAuthenticated(true);
             navigate('/profile'); // Redirect to the dashboard or feed page
         } catch (err) {
-            if (err.response && err.response.status === 422) {
-                const validationErrors = err.response.data.errors;
+            if (err.response && [422, 401].includes(err.response.status)) {
+                const errordata = err.response.data
 
+                if(errordata?.status === false) {
+                    toast.error('Please check email & password');
+                    return
+                }
+
+                const validationErrors = errordata.errors;
                 // Display all validation error messages in toast
                 for (const field in validationErrors) {
                     validationErrors[field].forEach((message) => {

@@ -35,13 +35,13 @@ const Like = ({ postId, initialLikes, initialLiked, onLikeToggle }) => {
     return (
         <button
             onClick={handleLikeToggle}
-            className="flex items-center space-x-2 hover:text-blue-500"
+            className="flex items-center space-x-2 hover:text-blue-500 "
         >
             {/* Show different icons based on the liked state */}
             {liked ? (
-                <FaThumbsUp className="text-blue-600 text-xl" /> // Liked icon
+                <FaThumbsUp className="text-xl" /> // Liked icon
             ) : (
-                <FaRegThumbsUp className="text-gray-600 text-xl" /> // Unliked icon
+                <FaRegThumbsUp className="text-xl" /> // Unliked icon
             )}
             <span className="text-sm font-medium">{likes}</span>
         </button>

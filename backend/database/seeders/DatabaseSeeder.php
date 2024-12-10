@@ -15,5 +15,7 @@ class DatabaseSeeder extends Seeder
     {
         // call the seeder class in order whatever we want
         $this->call(ApiCredentialsSeeder::class);
+        $this->call(UserTableSeeder::class);
+        $this->call(PostTableSeeder::class);
     }
 }

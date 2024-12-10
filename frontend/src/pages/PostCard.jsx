@@ -2,17 +2,18 @@ import Like from "../components/Like.jsx";
 import Share from "../components/Share.jsx";
 import CommentSection from "../components/CommentSection.jsx";
 import { FaComment } from "react-icons/fa";
-import {useState} from "react";
+import {useContext, useState} from "react";
 import {Link} from "react-router";
+import {AppContext} from "../components/AppLayout.jsx";
 
 const PostCard = ({ post, setPosts }) => {
+    const { backendUrl } = useContext(AppContext);
     const [showComments, setShowComments] = useState(false); // Toggle for comments
 
     const handleToggleComments = () => {
         setShowComments(!showComments);
     };
 
-    console.log(post, setPosts)
     const updatePostStats = (field, newCount) => {
         setPosts((prevPosts) =>
             prevPosts.map((p) =>
@@ -28,8 +29,9 @@ const PostCard = ({ post, setPosts }) => {
                 <div className="w-10 h-10 bg-gray-300 rounded-full overflow-hidden">
                     {/* Replace with user profile picture if available */}
                     <img
-                        src={`http://127.0.0.1:8000/storage/${post.user.picture || "default-profile.png"}`}
+                        src={`${backendUrl}/storage/${post.user.picture || "default-profile.png"}`}
                         alt={post.user.name}
+                        className="h-full w-full rounded-full"
                     />
                 </div>
                 <div className="ml-3">
@@ -45,7 +47,7 @@ const PostCard = ({ post, setPosts }) => {
             {/* Post Image */}
             {post.image && (
                 <img
-                    src={`http://127.0.0.1:8000/storage/${post.image}`}
+                    src={`${backendUrl}/storage/${post.image}`}
                     alt={post.title}
                     className="w-full rounded-md mb-4"
                     width={100}
@@ -73,7 +75,7 @@ const PostCard = ({ post, setPosts }) => {
                 {/* Comment Button */}
                 <button
                     onClick={handleToggleComments}
-                    className="flex items-center space-x-2 text-gray-600 hover:text-yellow-600"
+                    className="flex items-center space-x-2 hover:text-yellow-600"
                 >
                     <FaComment />
                     <span>Comment</span>

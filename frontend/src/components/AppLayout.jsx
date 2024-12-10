@@ -1,4 +1,4 @@
-import {Link} from 'react-router';
+import {NavLink} from 'react-router';
 import LogoutButton from "./LogoutButton.jsx";
 import {createContext, useEffect, useState} from "react";
 
@@ -26,27 +26,58 @@ const AppLayout = ({ children }) => {
             <header className="bg-blue-600 p-4">
                 <nav className="max-w-7xl mx-auto flex justify-between items-center text-white">
                     <div>
-                        <Link to="/feeds" className="mr-4">Feed</Link>
+                        {/* Navigation Links */}
+                        <NavLink
+                            to="/feeds"
+                            className={({isActive}) =>
+                                isActive ? "mr-4 text-yellow-300 font-bold" : "mr-4"
+                            }
+                        >
+                            Feed
+                        </NavLink>
 
-                        {
-                            !isAuthenticated && (
-                                <>
-                                    <Link to="/login" className="mr-4">Login</Link>
-                                    <Link to="/register" className="mr-4">Register</Link>
-                                </>
-                            )
-                        }
+                        {!isAuthenticated && (
+                            <>
+                                <NavLink
+                                    to="/login"
+                                    className={({isActive}) =>
+                                        isActive ? "mr-4 text-yellow-300 font-bold" : "mr-4"
+                                    }
+                                >
+                                    Login
+                                </NavLink>
+                                <NavLink
+                                    to="/register"
+                                    className={({isActive}) =>
+                                        isActive ? "mr-4 text-yellow-300 font-bold" : "mr-4"
+                                    }
+                                >
+                                    Register
+                                </NavLink>
+                            </>
+                        )}
 
-                        {
-                            isAuthenticated && (
-                                <>
-                                    <Link to="/profile" className="mr-4">Profile</Link>
-                                    <Link to="/posts" className="mr-4">Posts</Link>
-
-                                    <LogoutButton setIsAuthenticated={setIsAuthenticated} />
-                                </>
-                            )
-                        }
+                        {isAuthenticated && (
+                            <>
+                                <NavLink
+                                    to="/profile"
+                                    className={({isActive}) =>
+                                        isActive ? "mr-4 text-yellow-300 font-bold" : "mr-4"
+                                    }
+                                >
+                                    Profile
+                                </NavLink>
+                                <NavLink
+                                    to="/posts"
+                                    className={({isActive}) =>
+                                        isActive ? "mr-4 text-yellow-300 font-bold" : "mr-4"
+                                    }
+                                >
+                                    Posts
+                                </NavLink>
+                                <LogoutButton setIsAuthenticated={setIsAuthenticated}/>
+                            </>
+                        )}
                     </div>
                 </nav>
             </header>
@@ -55,7 +86,8 @@ const AppLayout = ({ children }) => {
             <AppContext.Provider value={
                 {
                     isAuthenticated,
-                    setIsAuthenticated
+                    setIsAuthenticated,
+                    backendUrl: 'http://127.0.0.1:8000'
                 }
             }>
                 <main className="">{children}</main>

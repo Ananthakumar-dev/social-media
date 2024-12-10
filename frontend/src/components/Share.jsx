@@ -37,7 +37,7 @@ const Share = ({ postId, initialShares, initialShared, onShareToggle }) => {
             onClick={handleShare}
             disabled={shared} // Disable the button after sharing
             className={`flex items-center space-x-2 ${
-                shared ? "text-green-500" : "text-gray-600"
+                shared ? "text-green-500" : "text-white"
             } hover:text-green-400`}
         >
             <FaShareAlt className="text-xl" />

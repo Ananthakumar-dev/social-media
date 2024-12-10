@@ -86,6 +86,9 @@ class PostService
         $request
     ) {
         try {
+            // Define the number of posts per page (pagination)
+            $perPage = $request->get('per_page', PAGINATION); // Default to 10 posts per page
+
             $userId = Auth::id();
             // Validate if the user exists
             $user = \App\Models\User::find($userId);
@@ -106,7 +109,7 @@ class PostService
                     DB::raw("(SELECT COUNT(id) FROM shares WHERE shares.user_id = '$userId' AND shares.post_id = posts.id) AS shared"),
                 ])
                 ->orderBy('created_at', 'desc') // Order by newest first
-                ->get();
+                ->paginate($perPage);
         } catch (Exception $e) {
             return [
                 'status' => false,

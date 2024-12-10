@@ -1,9 +1,11 @@
 import { useParams } from "react-router";
-import { useEffect, useState } from "react";
+import {useContext, useEffect, useState} from "react";
 import api from "../axios.js";
 import toast from "react-hot-toast";
+import {AppContext} from "../components/AppLayout.jsx";
 
 const PostDetails = () => {
+    const { backendUrl } = useContext(AppContext);
     const { postId } = useParams();
     const [details, setDetails] = useState({ comments: [], likes: [], shares: [] });
     const [loading, setLoading] = useState(true);
@@ -33,7 +35,7 @@ const PostDetails = () => {
         return users.map((user) => (
             <div key={user.id} className="flex items-center space-x-4 border-b border-gray-300 pb-2 mb-2">
                 <img
-                    src={`http://127.0.0.1:8000/storage/${user.user.picture || "default-profile.png"}`}
+                    src={`${backendUrl}/storage/${user.user.picture || "default-profile.png"}`}
                     alt={user.user.name}
                     className="w-10 h-10 rounded-full"
                 />

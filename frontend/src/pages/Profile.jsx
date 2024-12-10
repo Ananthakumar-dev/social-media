@@ -5,7 +5,7 @@ import {AppContext} from "../components/AppLayout.jsx";
 import {useNavigate} from "react-router";
 
 const Profile = () => {
-    const { isAuthenticated } = useContext(AppContext);
+    const { isAuthenticated, backendUrl } = useContext(AppContext);
     const navigate = useNavigate();
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
@@ -113,7 +113,7 @@ const Profile = () => {
                         {profilePicture && (
                             <div className="mt-4">
                                 <img
-                                    src={`http://127.0.0.1:8000/storage/${profilePicture || "default-profile.png"}`}
+                                    src={`${backendUrl}/storage/${profilePicture || "default-profile.png"}`}
                                     alt="Profile Picture"
                                     className="w-24 h-24 rounded-full object-cover mx-auto"
                                 />
