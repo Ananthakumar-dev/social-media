@@ -75,6 +75,14 @@ const AppLayout = ({ children }) => {
                                 >
                                     Posts
                                 </NavLink>
+                                <NavLink
+                                    to="/payments"
+                                    className={({isActive}) =>
+                                        isActive ? "mr-4 text-yellow-300 font-bold" : "mr-4"
+                                    }
+                                >
+                                    Payments
+                                </NavLink>
                                 <LogoutButton setIsAuthenticated={setIsAuthenticated}/>
                             </>
                         )}
