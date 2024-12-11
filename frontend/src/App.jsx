@@ -7,7 +7,9 @@ import Login from './pages/Login.jsx'; // Your login page
 import Register from './pages/Register';
 import CreatePost from "./pages/CreatePost.jsx";
 import Posts from "./pages/Posts.jsx";
-import PostDetails from "./pages/PostDetails.jsx"; // Your register page
+import PostDetails from "./pages/PostDetails.jsx";
+import PaymentPageWrapper from "./components/PaymentPageWrapper.jsx";
+
 
 const App = () => {
     return (
@@ -23,6 +25,7 @@ const App = () => {
                         <Route path="/post-details/:postId" element={<PostDetails />} />
                         <Route path="/login" element={<Login />} />
                         <Route path="/register" element={<Register />} />
+                        <Route path="/payments" element={<PaymentPageWrapper />} />
                     </Routes>
                 </AppLayout>
             </Router>
