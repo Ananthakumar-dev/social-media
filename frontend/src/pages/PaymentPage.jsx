@@ -1,8 +1,10 @@
 import { useState } from 'react';
 import { CardElement, useStripe, useElements } from '@stripe/react-stripe-js';
-import axios from '../axios'; // Replace with your Axios setup
+import api from '../axios'; // Replace with your Axios setup
+import { useNavigate } from "react-router";
 
 const PaymentPage = () => {
+    const navigate = useNavigate();
     const stripe = useStripe();
     const elements = useElements();
     const [loading, setLoading] = useState(false);
@@ -20,7 +22,7 @@ const PaymentPage = () => {
 
         try {
             // Call your backend to create a payment intent
-            const { data } = await axios.post('/create-payment-intent', {
+            const { data } = await api.post('/create-payment-intent', {
                 amount: 20, // $20 (use cents for the backend: 2000)
             });
 
@@ -37,6 +39,13 @@ const PaymentPage = () => {
                 setMessage(error.message);
             } else if (paymentIntent.status === 'succeeded') {
                 setMessage('Payment successful!');
+
+                await api.post("/payments", {
+                    transaction_id: paymentIntent.id,
+                    amount: paymentIntent.amount / 100,
+                });
+
+                navigate("/payments");
             }
         } catch (err) {
             setMessage('Error processing payment.');

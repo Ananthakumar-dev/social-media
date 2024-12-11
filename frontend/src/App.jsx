@@ -4,6 +4,7 @@ import AppLayout from './components/AppLayout.jsx';
 import Feed from './pages/Feed'; // Your feed page
 import Profile from './pages/Profile'; // Your profile page
 import Login from './pages/Login.jsx'; // Your login page
+import ListPayment from './pages/ListPayment.jsx'; // Your login page
 import Register from './pages/Register';
 import CreatePost from "./pages/CreatePost.jsx";
 import Posts from "./pages/Posts.jsx";
@@ -25,7 +26,8 @@ const App = () => {
                         <Route path="/post-details/:postId" element={<PostDetails />} />
                         <Route path="/login" element={<Login />} />
                         <Route path="/register" element={<Register />} />
-                        <Route path="/payments" element={<PaymentPageWrapper />} />
+                        <Route path="/payment" element={<PaymentPageWrapper />} />
+                        <Route path="/payments" element={<ListPayment />} />
                     </Routes>
                 </AppLayout>
             </Router>
