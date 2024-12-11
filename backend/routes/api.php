@@ -7,6 +7,7 @@ use App\Http\Controllers\Api\LikeController;
 use App\Http\Controllers\Api\PostController;
 use App\Http\Controllers\Api\ShareController;
 use App\Http\Controllers\Api\UserController;
+use App\Http\Controllers\PaymentController;
 use Illuminate\Support\Facades\Route;
 
 // Non-authorized
@@ -38,6 +39,11 @@ Route::middleware('auth:api')->group(function () {
 
     // Share
     Route::post('/posts/share', [ShareController::class, 'store']);
+
+    // payment
+    Route::post('/create-payment-intent', [PaymentController::class, 'createPaymentIntent']);
+    Route::post('/payments', [PaymentController::class, 'store']);
+    Route::get('/payments', [PaymentController::class, 'payments']);
 
     // logout
     Route::post('logout', [AuthController::class, 'logout']);
