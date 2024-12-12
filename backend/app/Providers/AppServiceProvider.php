@@ -24,6 +24,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        Model::preventLazyLoading();
+        Config::set('auth.defaults.guard', 'api'); // set default guard is api
+
+        Model::preventLazyLoading(); // prevent n+1 lazy queries
     }
 }
