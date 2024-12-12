@@ -2,6 +2,7 @@
 
 namespace App\Services\Stripe;
 
+use App\Services\CacheStore;
 use Stripe\PaymentIntent;
 use Stripe\Stripe;
 
@@ -14,7 +15,19 @@ class PaymentService
         float $amount
     ) {
         try {
-            Stripe::setApiKey(env('STRIPE_SECRET'));
+            $cacheStore = app(CacheStore::class);
+            ['Stripe' => $Stripe] = $cacheStore->api_credentials();
+
+            if (!isset($Stripe['secret_key']) || !$Stripe['secret_key']) {
+                return [
+                    'status' => false,
+                    'message' => 'Keys not found'
+                ];
+            }
+
+            Stripe::setApiKey(
+                $Stripe['secret_key']
+            );
 
             $paymentIntent = PaymentIntent::create([
                 'amount' => $amount * 100, // Convert to cents

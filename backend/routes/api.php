@@ -44,6 +44,7 @@ Route::middleware('auth:api')->group(function () {
     Route::post('/create-payment-intent', [PaymentController::class, 'createPaymentIntent']);
     Route::post('/payments', [PaymentController::class, 'store']);
     Route::get('/payments', [PaymentController::class, 'payments']);
+    Route::get('/stripe-key', [PaymentController::class, 'stripeKey']);
 
     // logout
     Route::post('logout', [AuthController::class, 'logout']);

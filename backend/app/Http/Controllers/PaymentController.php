@@ -4,11 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\PaymentRequest;
 use App\Services\Api\PaymentService as ApiPaymentService;
+use App\Services\CacheStore;
 use App\Services\Stripe\PaymentService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Stripe\Stripe;
-use Stripe\PaymentIntent;
 
 class PaymentController extends Controller
 {
@@ -67,5 +66,28 @@ class PaymentController extends Controller
         }
 
         return $payments->get();
+    }
+
+    /**
+     * get stripe publishable key
+     */
+    public function stripeKey()
+    {
+        $cacheStore = app(CacheStore::class);
+        ['Stripe' => $Stripe] = $cacheStore->api_credentials();
+
+        if (!isset($Stripe['public_key']) || !$Stripe['public_key']) {
+            return [
+                'status' => false,
+                'message' => 'Keys not found',
+                'publicKey' => null
+            ];
+        }
+
+        return [
+            'status' => true,
+            'message' => 'Key fetched',
+            'publicKey' => $Stripe['public_key']
+        ];
     }
 }
